@@ -89,6 +89,11 @@ class Property
      */
     private $created_At;
 
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     */
+    private $image;
+
     public function __construct()
     {
         $this->created_At = new \DateTime();
@@ -263,6 +268,18 @@ class Property
     public function setCreatedAt(\DateTimeInterface $created_At): self
     {
         $this->created_At = $created_At;
+
+        return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

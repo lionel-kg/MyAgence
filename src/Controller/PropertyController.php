@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Property;
+use App\Form\UploadImageType;
 use App\Repository\PropertyRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -69,6 +72,25 @@ class PropertyController extends AbstractController {
             'current_meny' => 'properties',
             'property' => $property
         ]);
-
+    }
+    /**
+     * @Route("/biens/add" , name="property.add")
+     */
+    public function addProperty(Request $request , EntityManagerInterface $em){
+        $property = new Property();
+        $form= $this->createForm(UploadImageType::class, $property);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $property = $form->getData();
+            $img = $form->get('image')->getData();
+            $property->setImage(file_get_contents($img));
+            $em->persist($property);
+            $em->flush();
+            
+        }
+            
+        return $this->render("property/addProp.html.twig",[
+            "form" => $form->createView(),
+        ]);
     }
 }
